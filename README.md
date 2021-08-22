@@ -1,5 +1,7 @@
 # Java虚拟机（Java Virtual Machine）
 
+[TOC]
+
 ## JVM整体架构
 
 ### 指令集架构
@@ -219,15 +221,14 @@ CAFEBABE字节码开头为识别Java信息。
 
 - ##### Prepare 准备
 
-
-类变量分配内存并设置默认初始值，零值。
+类变量分配内存并设置**默认初始值，零值。**
 final修饰的static在编译时候就会分配，准备阶段会显式初始化。
-不会为实例变量分配初始化，其随着对象一期分配到Java堆中。
+**不会为实例变量分配初始化**，其随着对象一起分配到Java堆中。
 
 - ##### Reslove 解析
 
 
-常量池符号引用转换为直接引用的过程。
+常量池符号引用转换为直接引用的过程。解析动作主要针对类或接口、字段、类方法、接口方法、方法类型等。对应常量池中的CONSTANT_Class_info、CONSTANT_Fieldref_info、CONSTANT_Methodref_info等
 
 #### Initialization阶段
 
@@ -316,10 +317,10 @@ System.out.println(clazz3);
 // 自己创建一个java.lang包
 package java.lang;
 public class String {
-		// 错误: 在类 java.lang.String 中找不到 main 方法, 请将 main 方法定义为:
-		// public static void main(String[] args)
-		// 否则 JavaFX 应用程序类必须扩展javafx.application.Application
-		// 由于双亲委派存在，java.lang.String在启动类加载器加载时报错
+	// 错误: 在类 java.lang.String 中找不到 main 方法, 请将 main 方法定义为:
+	// public static void main(String[] args)
+	// 否则 JavaFX 应用程序类必须扩展javafx.application.Application
+	// 由于双亲委派存在，java.lang.String在启动类加载器加载时报错
   	// 沙箱安全机制
     public static void main(String[] args) {
         System.out.println("Hello String");
@@ -452,7 +453,7 @@ public void test2() {
 }
 ```
 
-<img src="README.assets/image-20210820031543017.png" alt="image-20210820031543017" style="zoom:50%;" />
+<img src="README.assets/image-20210820031543017.png" alt="image-20210820031543017" style="zoom: 40%;" />
 
 ##### 操作数栈
 
@@ -460,11 +461,13 @@ public void test2() {
 
 - 深度在编译器定义，保存在Code属性的max_stack之中。
 
-<center class="half"><img src="README.assets/image-20210820104644659.png" alt="image-20210820104644659" style="zoom:40%;" /><img src="README.assets/image-20210820110238231.png" alt="image-20210820110238231" style="zoom:40%;" /><center>
+<center class="half"><img src="README.assets/image-20210820104644659.png" alt="image-20210820104644659" style="zoom:40%;" /><img src="README.assets/image-20210820110238231.png" alt="image-20210820110238231" style="zoom:40%;" /><center><center>操作数栈和局部变量表</center>
+
 
 当int取值-1~5采用`iconst`指令,取值-128~127采用`bipush`指令,取值-32768~32767采用`sipush`指令,取值-2147483648~2147483647采用`ldc`指令。
 
-<center class="half"><img src="README.assets/image-20210821013727740.png" alt="image-20210821013727740" style="zoom:90%;" /><img src="README.assets/image-20210821013753042.png" alt="image-20210821013753042" style="zoom: 67%;" /><center>
+<center class="half"><img src="README.assets/image-20210821013727740.png" alt="image-20210821013727740" style="zoom:90%;" /><img src="README.assets/image-20210821013753042.png" alt="image-20210821013753042" style="zoom: 67%;" /><center><center>i++和++i</center>
+
 
 > 栈顶缓存技术：将栈顶元素全部缓存在物理CPU的寄存器中，以此降低对内存的读/写次数，提升执行引擎的执行效率。
 
@@ -472,19 +475,126 @@ public void test2() {
 
 > 每一个栈帧内部都包含一个指向**运行时常量池**中该栈帧所述方法的引用。目的是为了支持当前方法的代码能够实现**动态链接**，如invokedynamic指令。
 
-- 方法的调用
-  - 链接
-    - 静态链接：当字节码被装载进JVM时，如果被调用的目标方法在编译期可知，且运行期保持不变。这种情况下将调用方法的符号引用转化为直接引用。invokespecial
-    - 动态链接：被调用的方法在编译期无法被确定下来。只能够在程序运行期将调用方法的符号引用转化为直接引用。invokevirtual/invokeinterface
-  - 绑定
+> 面向过程语言一般只有早期绑定。**面向对象语言**支持封装、继承、多态等特性，**具备早期绑定和晚期绑定两种方式**。
+>
+> Java中任何一个**普通方法都具备虚函数的特征**，相当于C++语言的虚函数（C++中需要使用virtual来显式定义）。如果在Java中不希望某个方法拥有虚函数的特征时，则可以使用关键字`final`来标记方法。
+
+- **方法的调用**
+  - **链接**
+    - 静态链接：当字节码被装载进JVM时，如果被调用的目标方法在编译期可知，且运行期保持不变。这种情况下将调用方法的符号引用转化为直接引用。
+    - 动态链接：被调用的方法在编译期无法被确定下来。只能够在程序运行期将调用方法的符号引用转化为直接引用。
+  - **绑定**
     - 早期绑定：静态链接绑定
     - 晚期绑定：程序运行期绑定
+  - **虚方法和非虚方法**
+    - 静态方法、私有方法、final方法、实例构造器、父类方法都是非虚方法
+    - 其他方法成为**虚方法**
+- **子类对象多态性**的使用前提：**①类的继承关系、②方法的重写**
+- **调用指令**
+  - **普通指令**
+    - **invokestatic**：静态方法，**非虚方法**
+    - **invokespecial**：调用`<init>`方法、私有及父类方法，解析阶段确定唯一方法版本，**非虚方法**
+    - **invokevirtual**：调用所有虚方法
+      - **方法重写的本质**：
+        - 找到操作数栈顶第一个元素所执行的对象实际类型，记作C
+        - 如果在类型C中找到与常量中的描述符和简单名称都相符的方法，则进行访问权限校验，通过则返回方法的直接引用，查找过程结束；如果不通过，则返回java.lang.IllegalAccessError异常
+        - 否则，按照继承关系从下往上一次对C的各个父类进行第2步骤的搜索和验证过程
+        - 如果始终没有找到合适的方法，则抛出java.lang.AbsractMethodError异常
+      - **虚方法表**：
+        - 面向对象中会频繁的使用到动态分派。JVM采用在类的方法区中建立一个**虚方法表**来代替查找。每个类中都有一个虚方法表，存放各方法的实际入口。在**类加载的链接阶段**被创建并初始化，类的变量初始值准备完成后，该类的方发表也初始化完毕
+    - **invokeinterface**：调用接口方法
+  - **动态调用指令**
+    - **invokedynamic**：动态解析出需要调用的方法。**lambda表达式**
+- **动态类型语言和静态类型语言**
+  - **Java**本质上是**静态类型语言**，JavaScript、Python属于**动态类型语言**
+  - 两者区别在于对类型的检查是在**编译期还是在运行期**。编译期——静态语言，运行期——动态语言。
 
-> 面向过程语言一般只有早期绑定。面向对象语言支持封装、继承、多态等特性，具备早期绑定和晚期绑定两种方式。
->
-> Java中任何一个普通方法都具备虚函数的特征，相当于C++语言的虚函数（C++中需要使用virtual来显式定义）。如果在Java中不希望某个方法拥有虚函数的特征时，则可以使用关键字`final`来标记方法。
+<img src="README.assets/image-20210822200825403.png" alt="image-20210822200825403" style="zoom:50%;" />
+
+<center>虚方法表例<center>
+
+
 
 ##### 方法返回地址（或方法正常退出或者异常退出的定义）
 
+存放的是调用该方法的**PC寄存器的值**。无论哪种方式退出，都会**返回到该方法被调用位置**。若正常退出，调用者的PC计数器的值作为返回地址，即调用该方法的指令的**下一条指令的地址**；若异常退出，返回地址是通过异常表来确定的。
+
+- **返回指令**：
+  - **ireturn**：返回值是boolen、type、char、short、int类型时使用
+  - **lreturn**（long）、**freturn**（float）、**dfreturn**（double）、**areturn**（String和Date）
+  - **return**：void方法、实例初始化方法、类和接口的初始化方法使用
+
+- **异常处理表**
+
+![image-20210822203140457](README.assets/image-20210822203140457.png)
+
 ##### 一些附加信息
 
+允许携带一些与Java虚拟机实现相关的一些附加信息，例如对程序调试提供支持的信息。
+
+#### 栈的总结
+
+- 栈溢出：StackOverflowError
+
+  - 通过-Xss来设置栈的大小。
+
+- 调整栈的大小不一定保证不出现溢出。
+
+- 垃圾回收不涉及虚拟机栈空间。
+
+- 方法中定义的局部变量是否线程安全？
+
+  - StringBuilder**线程不安全**
+
+  - ```java
+    // 内部产生内部消化，线程安全
+    public static void method1() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("a");
+        sb.append("b");
+    }
+    
+    // 线程不安全 发生逃逸
+    public static void method2(StringBuilder sb) {
+        sb.append("a");
+        sb.append("b");
+    }
+    
+    // 线程不安全 发生逃逸
+    public static StringBuilder method3() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("a");
+        sb.append("b");
+        return sb;
+    }
+    
+    // 线程安全
+    public static String method4() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("a");
+        sb.append("b");
+        return sb.toString();
+    }
+    ```
+
+#### 本地方法栈
+
+当某个线程调用一个本地方法时，它和虚拟机拥有同样的权限。
+
+- 本地方法可以通过本地方法接口来**访问虚拟机内部的运行时数据区**
+- 甚至可以直接使用本地处理器中的寄存器
+- 直接从本地内存的堆中分配任意数量的内存
+
+并不是所有的JVM都支持本地方法，**Hotspot JVM**中，本地方法栈和虚拟机栈合二为一。
+
+## 本地方法接口
+
+Native Method就是Java调用非Java代码的接口。标注了**native**，没有具体方法的实现。
+
+- 与Java环境外交互：与底层系统交互，如操作系统或某些硬件交换信息时的情况。
+- 与操作系统交互：Java实现了jre与底层系统的交互，甚至JVM的一些部分使用C语言实现的。
+- Sun's Java：Sun的解释器是C实现的。例如java.lang.Thread的`setPriority()`中调用的本地方法`setPriority0()`，通过C实现。（external dynamic link library）
+
+## 堆
+
+TO BE CONTINUE……
