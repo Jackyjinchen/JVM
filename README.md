@@ -579,7 +579,7 @@ public void test2() {
     }
     ```
 
-#### 本地方法栈
+### 本地方法栈
 
 当某个线程调用一个本地方法时，它和虚拟机拥有同样的权限。
 
@@ -589,6 +589,26 @@ public void test2() {
 
 并不是所有的JVM都支持本地方法，**Hotspot JVM**中，本地方法栈和虚拟机栈合二为一。
 
+### 堆
+
+> 堆是线程共享的，Runtime运行时数据区中只有一个方法区和堆，对内存大小是可以调节的。
+
+- 可以划分线程**私有的缓冲区**（Thread Local Allocation Buffer, **TLAB**），**提高并发性**。
+
+- 可以通过-Xms设置最小值，-Xmx设置最大值。
+
+可以使用jvisualvm来监测，在java目录/bin下。
+
+<img src="README.assets/image-20210825135543983.png" alt="image-20210825135543983" style="zoom:67%;" />
+
+栈帧中保存的是数组和对象的引用，这个引用指向对象或者数组在堆中的位置。
+
+<img src="README.assets/image-20210825140731526.png" alt="image-20210825140731526" style="zoom: 50%;" />
+
+<center>Java栈、堆、方法去的对应关系</center>
+
+
+
 ## 本地方法接口
 
 Native Method就是Java调用非Java代码的接口。标注了**native**，没有具体方法的实现。
@@ -597,6 +617,8 @@ Native Method就是Java调用非Java代码的接口。标注了**native**，没�
 - 与操作系统交互：Java实现了jre与底层系统的交互，甚至JVM的一些部分使用C语言实现的。
 - Sun's Java：Sun的解释器是C实现的。例如java.lang.Thread的`setPriority()`中调用的本地方法`setPriority0()`，通过C实现。（external dynamic link library）
 
-## 堆
+
+
+
 
 TO BE CONTINUE……

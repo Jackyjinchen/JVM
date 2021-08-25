@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/06虚方法和非虚方法/06虚方法和非虚方法.iml" filepath="$PROJECT_DIR$/06虚方法和非虚方法/06虚方法和非虚方法.iml" />
       <module fileurl="file://$PROJECT_DIR$/07invokedynamic/07invokedynamic.iml" filepath="$PROJECT_DIR$/07invokedynamic/07invokedynamic.iml" />
       <module fileurl="file://$PROJECT_DIR$/08线程安全/08线程安全.iml" filepath="$PROJECT_DIR$/08线程安全/08线程安全.iml" />
+      <module fileurl="file://$PROJECT_DIR$/09JVM堆/09JVM堆.iml" filepath="$PROJECT_DIR$/09JVM堆/09JVM堆.iml" />
       <module fileurl="file://$PROJECT_DIR$/JVMCode.iml" filepath="$PROJECT_DIR$/JVMCode.iml" />
     </modules>
   </component>
